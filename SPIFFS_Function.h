@@ -4,14 +4,13 @@ void initSPIFFS() {
         ESP.restart();
         return;
     }
-    Serial.println("SPIFFS mounted successfully");
 }
 
 void listAllFiles() {
     File root = SPIFFS.open("/");
     File file = root.openNextFile();
     while (file) {
-        Serial.print("FILE: ");
+        Serial.print("FILE:");
         Serial.println(file.name());
         file = root.openNextFile();
     }

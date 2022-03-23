@@ -14,8 +14,7 @@ void manageServer() {
             }
         }
         writeData(wmssid, wmpwd, wmhostname);
-        request->send(200, "text/plain", "Configure Done. ESP will restart!");
-        delay(1000);
+        request->send(200, "text/plain", "Configure Done. ESP restarting...");
         ESP.restart();
     });
 
@@ -30,6 +29,17 @@ void manageServer() {
     server.begin();
 }
 
+String processor(const String& var) {
+    if (var == "STATE") {
+        if (isDisplay) {
+            return "ON";
+        } else {
+            return "OFF";
+        }
+    }
+    return String();
+}
+
 void appServer() {
     server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
         request->send(SPIFFS, "/index.html", "text/html");
@@ -37,6 +47,20 @@ void appServer() {
 
     server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest* request) {
         request->send(SPIFFS, "/style.css", "text/css");
+    });
+
+    // Route to set GPIO state to HIGH
+    server.on("/on", HTTP_GET, [](AsyncWebServerRequest* request) {
+        isDisplay = true;
+        digitalWrite(LED, isDisplay);
+        request->send(SPIFFS, "/index.html", "text/html", false, processor);
+    });
+
+    // Route to set GPIO state to LOW
+    server.on("/off", HTTP_GET, [](AsyncWebServerRequest* request) {
+        isDisplay = false;
+        digitalWrite(LED, isDisplay);
+        request->send(SPIFFS, "/index.html", "text/html", false, processor);
     });
 
     server.begin();
