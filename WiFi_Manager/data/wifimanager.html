@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>WIFI Manager</title>
+  </head>
+  <body>
+    <div class="topnav">
+      <h1>ESP WiFi Manager</h1>
+    </div>
+    <div class="card">
+      <form action="/" method="post">
+        <input type="text" name="ssid" id="ssid" /><br />
+        <input type="text" name="password" id="password" /><br />
+        <input type="text" name="hostname" id="hostname" /><br />
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+  </body>
+  <script>
+    var websocket = new WebSocket("ws://" + location.hostname + ":81/");
+    websocket.onmessage = function (event) {
+      onMessage(event);
+    };
+    function onMessage(event) {
+      var JSONContent = JSON.parse(event.data);
+      if (JSONContent.hasOwnProperty("ssid")) {
+        document.getElementById("ssid").value = JSONContent.ssid;
+      }
+      if (JSONContent.hasOwnProperty("password")) {
+        document.getElementById("password").value = JSONContent.password;
+      }
+      if (JSONContent.hasOwnProperty("hostname")) {
+        document.getElementById("hostname").value = JSONContent.hostname;
+      }
+    }
+  </script>
+</html>

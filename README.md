@@ -37,6 +37,9 @@ I also add `WiFi Auto reconnect` if ESP32 lost connection because of some reason
 
 ```cpp
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+    // Return when configure WiFi
+    if (isReconfigWiFi)
+        return;
     // Reconnect WiFi
     Serial.print("WiFi lost connection. Reason: ");
     Serial.println(info.disconnected.reason);

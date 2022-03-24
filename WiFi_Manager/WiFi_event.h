@@ -20,7 +20,7 @@ bool setSTA() {
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(hostname.c_str());
     WiFi.begin(ssid.c_str(), password.c_str());
-    Serial.print("Connecting to ");
+    Serial.print("Connect to ");
     Serial.print(ssid);
 
     // Connect to WIFI
@@ -49,6 +49,9 @@ void intReconfigWiFi() {
 }
 
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+    // Return when configure WiFi
+    if (isReconfigWiFi)
+        return;
     // Reconnect WiFi
     Serial.print("WiFi lost connection. Reason: ");
     Serial.println(info.disconnected.reason);

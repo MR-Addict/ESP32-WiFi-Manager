@@ -59,9 +59,9 @@ void writeData(String wmssid, String wmpassword, String wmhostname) {
         Serial.println("Failed to creat file for writing!");
         return;
     }
-    StaticJsonDocument<200> doc;
 
     // Set the values in the document
+    StaticJsonDocument<200> doc;
     doc["ssid"] = wmssid;
     doc["password"] = wmpassword;
     doc["hostname"] = wmhostname;

@@ -15,6 +15,7 @@ void manageServer() {
         }
         writeData(wmssid, wmpwd, wmhostname);
         request->send(200, "text/plain", "Configure Done. ESP restarting...");
+        delay(1000);
         ESP.restart();
     });
 
@@ -42,7 +43,7 @@ String processor(const String& var) {
 
 void appServer() {
     server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
-        request->send(SPIFFS, "/index.html", "text/html");
+        request->send(SPIFFS, "/index.html", "text/html", false, processor);
     });
 
     server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest* request) {
