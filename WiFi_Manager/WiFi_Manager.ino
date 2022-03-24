@@ -1,4 +1,5 @@
 // Header files for WIFI
+#include <HTTPClient.h>
 #include <SPIFFS.h>
 #include <WiFi.h>
 
@@ -9,9 +10,9 @@
 String ssid;
 String password;
 String hostname;
+String cityCode = "Nanjing,CN";
+String APIKEY = "b89072aa8cd18aab5f76df1a0debe2eb";
 bool isReconfigWiFi;
-bool isDisplay;
-const uint8_t LED = 2;
 const uint8_t INT_PIN = 0;
 
 AsyncWebServer server(80);
@@ -23,8 +24,11 @@ WebSocketsServer websocket(81);
 #include "WiFi_event.h"
 #include "websocket_event.h"
 
+// TODO: Rewrite auto reconnect
+// TODO: Rewrite auto fill
+// TODO: Rewrite web server
+
 void setup() {
-    pinMode(LED, OUTPUT);
     pinMode(INT_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(INT_PIN), intReconfigWiFi, FALLING);
     Serial.begin(115200);
@@ -41,4 +45,5 @@ void loop() {
         manageServer();
         isReconfigWiFi = false;
     }
+    getHTTPRequest();
 }

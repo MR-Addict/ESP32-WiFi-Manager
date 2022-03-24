@@ -30,39 +30,27 @@ void manageServer() {
     server.begin();
 }
 
-String processor(const String& var) {
-    if (var == "STATE") {
-        if (isDisplay) {
-            return "ON";
-        } else {
-            return "OFF";
+void getHTTPRequest() {
+    if (WiFi.status() != WL_CONNECTED)
+        return;
+    HTTPClient http;
+    String server =
+        "http://api.openweathermap.org/data/2.5/weather?q=" + cityCode +
+        "&APPID=" + APIKEY;
+    http.begin(server);
+    int8_t httpCode = http.GET();
+    if (httpCode) {
+        String JSONBuffer = http.getString();
+        Serial.println(JSONBuffer);
+        DynamicJsonDocument doc(1024);
+        DeserializationError error = deserializeJson(doc, JSONBuffer);
+        if (error) {
+            Serial.print(F("deserializeJson() failed: "));
+            Serial.println(error.f_str());
         }
+    } else {
+        Serial.println("Error on http request");
     }
-    return String();
-}
-
-void appServer() {
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
-        request->send(SPIFFS, "/index.html", "text/html", false, processor);
-    });
-
-    server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest* request) {
-        request->send(SPIFFS, "/style.css", "text/css");
-    });
-
-    // Route to set GPIO state to HIGH
-    server.on("/on", HTTP_GET, [](AsyncWebServerRequest* request) {
-        isDisplay = true;
-        digitalWrite(LED, isDisplay);
-        request->send(SPIFFS, "/index.html", "text/html", false, processor);
-    });
-
-    // Route to set GPIO state to LOW
-    server.on("/off", HTTP_GET, [](AsyncWebServerRequest* request) {
-        isDisplay = false;
-        digitalWrite(LED, isDisplay);
-        request->send(SPIFFS, "/index.html", "text/html", false, processor);
-    });
-
-    server.begin();
+    http.end();
+    delay(5000);
 }
