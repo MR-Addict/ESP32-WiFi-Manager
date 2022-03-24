@@ -1,6 +1,11 @@
-// Header files for WIFI
+// Header files for WiFi
+#if defined ESP8266
+#include <ESP8266WiFi.h>
+#include <FS.h>
+#elif defined ESP32
 #include <SPIFFS.h>
 #include <WiFi.h>
+#endif
 
 #include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>

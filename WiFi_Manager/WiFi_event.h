@@ -48,20 +48,7 @@ void intReconfigWiFi() {
     isReconfigWiFi = true;
 }
 
-void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-    // Return when configure WiFi
-    if (isReconfigWiFi)
-        return;
-    // Reconnect WiFi
-    Serial.print("WiFi lost connection. Reason: ");
-    Serial.println(info.disconnected.reason);
-    Serial.println("Trying to Reconnect");
-    WiFi.begin(ssid.c_str(), password.c_str());
-}
-
 void initWiFi() {
-    // Set WIFI disconnect event
-    WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
     // Set STA mode
     if (!setSTA()) {
         setAP();

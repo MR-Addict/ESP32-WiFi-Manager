@@ -6,16 +6,6 @@ void initSPIFFS() {
     }
 }
 
-void listAllFiles() {
-    File root = SPIFFS.open("/");
-    File file = root.openNextFile();
-    while (file) {
-        Serial.print("FILE:");
-        Serial.println(file.name());
-        file = root.openNextFile();
-    }
-}
-
 bool readData() {
     // Read file
     File file = SPIFFS.open("/JSON.json", "r");
