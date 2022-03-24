@@ -59,7 +59,5 @@ void initWiFi() {
     if (!setSTA()) {
         setAP();
         manageServer();
-    } else {
-        appServer();
     }
 }

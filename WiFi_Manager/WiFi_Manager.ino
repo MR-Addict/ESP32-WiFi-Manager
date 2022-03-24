@@ -1,4 +1,5 @@
 // Header files for WiFi
+#include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 #include <FS.h>
 
@@ -9,9 +10,9 @@
 String ssid;
 String password;
 String hostname;
+String cityCode = "Nanjing, CN";
+String APIKEY = "b89072aa8cd18aab5f76df1a0debe2eb";
 bool isReconfigWiFi;
-bool isDisplay;
-const uint8_t LED = 2;
 const uint8_t INT_PIN = 0;
 
 AsyncWebServer server(80);
@@ -25,8 +26,6 @@ WiFiEventHandler WiFiStationDisconnected;
 #include "websocket_event.h"
 
 void setup() {
-    pinMode(LED, OUTPUT);
-    digitalWrite(LED, HIGH);
     pinMode(INT_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(INT_PIN), intReconfigWiFi, FALLING);
     Serial.begin(115200);
@@ -43,4 +42,5 @@ void loop() {
         manageServer();
         isReconfigWiFi = false;
     }
+    getHTTPRequest();
 }
