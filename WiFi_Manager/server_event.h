@@ -15,7 +15,7 @@ void manageServer() {
         }
         writeData(wmssid, wmpwd, wmhostname);
         request->send(200, "text/plain", "Configure Done. ESP restarting...");
-        delay(1000);
+        delay(3000);
         ESP.restart();
     });
 
@@ -53,14 +53,22 @@ void appServer() {
     // Route to set GPIO state to HIGH
     server.on("/on", HTTP_GET, [](AsyncWebServerRequest* request) {
         isDisplay = true;
-        digitalWrite(LED, isDisplay);
+#if defined ESP8266
+        digitalWrite(LED, !isDisplay);
+#elif defined ESP32
+        digitalWrite(LED,isDisplay);
+#endif
         request->send(SPIFFS, "/index.html", "text/html", false, processor);
     });
 
     // Route to set GPIO state to LOW
     server.on("/off", HTTP_GET, [](AsyncWebServerRequest* request) {
         isDisplay = false;
-        digitalWrite(LED, isDisplay);
+#if defined ESP8266
+        digitalWrite(LED, !isDisplay);
+#elif defined ESP32
+        digitalWrite(LED,isDisplay);
+#endif
         request->send(SPIFFS, "/index.html", "text/html", false, processor);
     });
 

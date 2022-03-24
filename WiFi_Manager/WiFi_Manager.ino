@@ -30,6 +30,9 @@ WebSocketsServer websocket(81);
 
 void setup() {
     pinMode(LED, OUTPUT);
+#if defined ESP8266
+    digitalWrite(LED, HIGH);
+#endif
     pinMode(INT_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(INT_PIN), intReconfigWiFi, FALLING);
     Serial.begin(115200);

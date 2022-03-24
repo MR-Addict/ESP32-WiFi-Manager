@@ -44,9 +44,15 @@ bool setSTA() {
     return true;
 }
 
+#if defined ESP8266
+void ICACHE_RAM_ATTR intReconfigWiFi() {
+    isReconfigWiFi = true;
+}
+#elif defined ESP32
 void intReconfigWiFi() {
     isReconfigWiFi = true;
 }
+#endif
 
 void initWiFi() {
     // Set STA mode
