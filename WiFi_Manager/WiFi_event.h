@@ -33,7 +33,7 @@ bool setSTA() {
             break;
         }
         // Connect failed and timeout
-        else if (millis() - connectTime > 15000) {
+        else if (millis() - connectTime > 20000) {
             Serial.println();
             Serial.println("Timeout! Connect failed!");
             return false;
@@ -44,17 +44,17 @@ bool setSTA() {
     return true;
 }
 
-#if defined ESP8266
 void ICACHE_RAM_ATTR intReconfigWiFi() {
     isReconfigWiFi = true;
 }
-#elif defined ESP32
-void intReconfigWiFi() {
-    isReconfigWiFi = true;
-}
-#endif
 
 void initWiFi() {
+    // WiFi STA auto reconnect
+    WiFiStationDisconnected = WiFi.onStationModeDisconnected(
+        [](const WiFiEventStationModeDisconnected& event) {
+            Serial.println("WiFi lost connection. Trying to reconnect...");
+            WiFi.begin(ssid.c_str(), password.c_str());
+        });
     // Set STA mode
     if (!setSTA()) {
         setAP();

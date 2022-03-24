@@ -53,22 +53,14 @@ void appServer() {
     // Route to set GPIO state to HIGH
     server.on("/on", HTTP_GET, [](AsyncWebServerRequest* request) {
         isDisplay = true;
-#if defined ESP8266
         digitalWrite(LED, !isDisplay);
-#elif defined ESP32
-        digitalWrite(LED,isDisplay);
-#endif
         request->send(SPIFFS, "/index.html", "text/html", false, processor);
     });
 
     // Route to set GPIO state to LOW
     server.on("/off", HTTP_GET, [](AsyncWebServerRequest* request) {
         isDisplay = false;
-#if defined ESP8266
         digitalWrite(LED, !isDisplay);
-#elif defined ESP32
-        digitalWrite(LED,isDisplay);
-#endif
         request->send(SPIFFS, "/index.html", "text/html", false, processor);
     });
 
