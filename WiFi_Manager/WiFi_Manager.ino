@@ -22,10 +22,11 @@ String cityCode = "Nanjing, CN";
 // For WiFi manager
 bool isAPMode;
 bool isReconfigWiFi;
-const uint8_t INT_PIN = 0;
+const uint8_t INT_PIN = 12;
 
 // weather data stucture
 struct weatherData {
+    int code;
     float temp;
     float humidity;
     String weather;
@@ -39,24 +40,24 @@ WiFiEventHandler WiFiStationDisconnected;
 Scheduler tasks;
 OLED oled(128, 64);
 
+#include "bitmap.h"
+#include "font/Dialog_bold_10.h"
+#include "font/Orbitron_Bold_16.h"
+
 #include "SPIFFS_event.h"
 #include "server_event.h"
 
 #include "WiFi_event.h"
 #include "websocket_event.h"
 
-#include "OLED.h"
-#include "bitmap.h"
-#include "font/Orbitron_Bold_16.h"
 #include "tasks.h"
 
 Task task1(0, TASK_FOREVER, &task1callback);
-Task task2(TASK_HOUR, TASK_FOREVER, &task2callback);
+Task task2(30 * TASK_MINUTE, TASK_FOREVER, &task2callback);
 Task task3(0, TASK_FOREVER, &task3callback);
-Task task4(TASK_SECOND, TASK_FOREVER, &task4callback);
+Task task4(10 * TASK_SECOND, TASK_FOREVER, &task4callback);
 
 void setup() {
-    oled.setFont(&Orbitron_Bold_16);
     pinMode(INT_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(INT_PIN), intReconfigWiFi, FALLING);
     Serial.begin(115200);

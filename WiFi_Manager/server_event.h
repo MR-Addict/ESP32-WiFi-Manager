@@ -15,6 +15,11 @@ void WiFiManageServer() {
         }
         writeSPIFFS(wmssid, wmpwd, wmhostname);
         request->send(200, "text/plain", "Configure Done. ESP restarting...");
+        oled.clear();
+        oled.setFont(&Dialog_bold_10);
+        oled.drawBitmap(44, 0, 40, 40, restart_40x40);
+        oled.print(20, 40, "Restarting...");
+        oled.show();
         delay(3000);
         ESP.restart();
     });
@@ -48,7 +53,8 @@ void getWeatherData() {
             Serial.print(F("deserializeJson() failed: "));
             Serial.println(error.f_str());
         }
-        if ((int)doc["cod"] == 200) {
+        weather.code = doc["cod"];
+        if (weather.code == 200) {
             weather.temp = doc["main"]["temp"];
             weather.humidity = doc["main"]["humidity"];
             weather.weather = doc["weather"][0]["main"].as<String>();
