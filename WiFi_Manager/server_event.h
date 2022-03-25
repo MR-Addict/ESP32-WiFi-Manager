@@ -37,17 +37,21 @@ void getWeatherData() {
     HTTPClient http;
     String server =
         "http://api.openweathermap.org/data/2.5/weather?q=" + cityCode +
-        "&APPID=" + APIKEY;
+        "&APPID=" + APIKEY + "&mode=json&units=metric";
     http.begin(client, server);
     int8_t httpCode = http.GET();
     if (httpCode) {
         String JSONBuffer = http.getString();
-        Serial.println(JSONBuffer);
         DynamicJsonDocument doc(1024);
         DeserializationError error = deserializeJson(doc, JSONBuffer);
         if (error) {
             Serial.print(F("deserializeJson() failed: "));
             Serial.println(error.f_str());
+        }
+        if ((int)doc["cod"] == 200) {
+            weather.temp = doc["main"]["temp"];
+            weather.humidity = doc["main"]["humidity"];
+            weather.weather = doc["weather"][0]["main"].as<String>();
         }
     } else {
         Serial.println("Error on http request");
