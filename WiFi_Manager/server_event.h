@@ -31,6 +31,8 @@ void WiFiManageServer() {
 }
 
 void getWeatherData() {
+    if (isAPMode)
+        return;
     HTTPClient http;
     String server =
         "http://api.openweathermap.org/data/2.5/weather?q=" + cityCode +
@@ -50,5 +52,4 @@ void getWeatherData() {
         Serial.println("Error on http request");
     }
     http.end();
-    delay(5000);
 }

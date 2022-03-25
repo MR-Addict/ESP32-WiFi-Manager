@@ -8,6 +8,9 @@
 #include <ESPAsyncWebServer.h>
 #include <WebSocketsServer.h>
 
+// Task scheduler
+#include <TaskScheduler.h>
+
 // For WiFi configuration
 String ssid;
 String password;
@@ -22,12 +25,19 @@ const uint8_t INT_PIN = 0;
 
 AsyncWebServer server(80);
 WebSocketsServer websocket(81);
+Scheduler tasks;
 
 #include "SPIFFS_event.h"
 #include "server_event.h"
 
 #include "WiFi_event.h"
 #include "websocket_event.h"
+
+#include "tasks.h"
+
+Task task1(0, TASK_FOREVER, &task1callback);
+Task task2(5000, TASK_FOREVER, &task2callback);
+Task task3(0, TASK_FOREVER, &task3callback);
 
 // TODO: Rewrite auto reconnect
 // TODO: Rewrite auto fill
@@ -40,18 +50,15 @@ void setup() {
     initSPIFFS();
     initWiFi();
     initWebsocket();
+
+    tasks.addTask(task1);
+    tasks.addTask(task3);
+    tasks.addTask(task2);
+    task1.enable();
+    task2.enable();
+    task3.enable();
 }
 
 void loop() {
-    if (isReconfigWiFi) {
-        Serial.println("Reconfig WiFi started!");
-        setAP();
-        WiFiManageServer();
-        isReconfigWiFi = false;
-    }
-    if (isAPMode) {
-        websocket.loop();
-    } else {
-        getWeatherData();
-    }
+    tasks.execute();
 }
