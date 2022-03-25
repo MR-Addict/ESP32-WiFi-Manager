@@ -17,7 +17,7 @@ String password;
 String hostname;
 // For openweathermap API
 String cityCode = "Nanjing, CN";
-String APIKEY = "b89072aa8cd18aab5f76df1a0debe2eb";
+#include <arduino_secrets.h>
 // For WiFi manager
 bool isAPMode;
 bool isReconfigWiFi;
