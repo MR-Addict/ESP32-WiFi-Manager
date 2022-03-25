@@ -1,4 +1,4 @@
-void manageServer() {
+void WiFiManageServer() {
     server.on("/", HTTP_POST, [](AsyncWebServerRequest* request) {
         // Get POST data
         String wmssid, wmpwd, wmhostname;
@@ -13,7 +13,7 @@ void manageServer() {
                 wmhostname = p->value().c_str();
             }
         }
-        writeData(wmssid, wmpwd, wmhostname);
+        writeSPIFFS(wmssid, wmpwd, wmhostname);
         request->send(200, "text/plain", "Configure Done. ESP restarting...");
         delay(3000);
         ESP.restart();
@@ -30,9 +30,7 @@ void manageServer() {
     server.begin();
 }
 
-void getHTTPRequest() {
-    if (WiFi.status() != WL_CONNECTED)
-        return;
+void getWeatherData() {
     WiFiClient client;
     HTTPClient http;
     String server =

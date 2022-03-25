@@ -11,8 +11,10 @@ void setAP() {
 }
 
 bool setSTA() {
+    // Reset server first before set STA mode
+    server.reset();
     // Read data first
-    if (!readData()) {
+    if (!updateSPIFFS()) {
         return false;
     }
 
@@ -46,18 +48,26 @@ bool setSTA() {
 
 void ICACHE_RAM_ATTR intReconfigWiFi() {
     isReconfigWiFi = true;
+    isAPMode = true;
 }
 
 void initWiFi() {
+    // Set STA mode
+    if (!setSTA()) {
+        isAPMode = true;
+    } else {
+        isAPMode = false;
+    }
+    if (isAPMode) {
+        setAP();
+        WiFiManageServer();
+    }
     // WiFi STA auto reconnect
     WiFiStationDisconnected = WiFi.onStationModeDisconnected(
         [](const WiFiEventStationModeDisconnected& event) {
+            if (isAPMode)
+                return;
             Serial.println("WiFi lost connection. Trying to reconnect...");
             WiFi.begin(ssid.c_str(), password.c_str());
         });
-    // Set STA mode
-    if (!setSTA()) {
-        setAP();
-        manageServer();
-    }
 }
