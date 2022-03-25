@@ -31,6 +31,8 @@ void WiFiManageServer() {
 }
 
 void getWeatherData() {
+    if (isAPMode)
+        return;
     WiFiClient client;
     HTTPClient http;
     String server =
@@ -51,5 +53,4 @@ void getWeatherData() {
         Serial.println("Error on http request");
     }
     http.end();
-    delay(5000);
 }
