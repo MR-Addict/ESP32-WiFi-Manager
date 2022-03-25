@@ -23,7 +23,6 @@ void webSocketEvent(uint8_t num,
 
             // Send message to connected client
             websocket.sendTXT(num, message);
-            Serial.println(message);
         } break;
         case WStype_TEXT: {
             Serial.printf("[%u] get Text: %s\n", num, payload);

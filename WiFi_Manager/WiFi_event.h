@@ -11,19 +11,19 @@ void setAP() {
 }
 
 bool setSTA() {
-    // Read data first
-    if (!readData()) {
+    // Reset server first before set STA mode
+    server.reset();
+    // Update WiFi configuration failed
+    if (!updateSPIFFS()) {
         return false;
     }
-
     // Configure STA
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(hostname.c_str());
     WiFi.begin(ssid.c_str(), password.c_str());
     Serial.print("Connect to ");
     Serial.print(ssid);
-
-    // Connect to WIFI
+    // Connect to WiFi
     unsigned long connectTime = millis();
     while (true) {
         delay(500);
@@ -46,11 +46,12 @@ bool setSTA() {
 
 void intReconfigWiFi() {
     isReconfigWiFi = true;
+    isAPMode = true;
 }
 
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-    // Return when configure WiFi
-    if (isReconfigWiFi)
+    // Return when current mode is AP mpde for configuring WiFi
+    if (isAPMode)
         return;
     // Reconnect WiFi
     Serial.print("WiFi lost connection. Reason: ");
@@ -60,11 +61,16 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
 }
 
 void initWiFi() {
-    // Set WIFI disconnect event
-    WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
     // Set STA mode
     if (!setSTA()) {
-        setAP();
-        manageServer();
+        isAPMode = true;
+    } else {
+        isAPMode = false;
     }
+    if (isAPMode) {
+        setAP();
+        WiFiManageServer();
+    }
+    // Set WIFI disconnect event
+    WiFi.onEvent(WiFiStationDisconnected, SYSTEM_EVENT_STA_DISCONNECTED);
 }

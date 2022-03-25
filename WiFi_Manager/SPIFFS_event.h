@@ -16,7 +16,7 @@ void listAllFiles() {
     }
 }
 
-bool readData() {
+bool updateSPIFFS() {
     // Read file
     File file = SPIFFS.open("/JSON.json", "r");
     if (!file || file.isDirectory()) {
@@ -52,7 +52,7 @@ bool readData() {
     return true;
 }
 
-void writeData(String wmssid, String wmpassword, String wmhostname) {
+void writeSPIFFS(String wmssid, String wmpassword, String wmhostname) {
     SPIFFS.remove("/JSON.json");
     File file = SPIFFS.open("/JSON.json", "w");
     if (!file || file.isDirectory()) {

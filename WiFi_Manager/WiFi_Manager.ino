@@ -3,15 +3,20 @@
 #include <SPIFFS.h>
 #include <WiFi.h>
 
+// For server build
 #include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>
 #include <WebSocketsServer.h>
 
+// For WiFi configuration
 String ssid;
 String password;
 String hostname;
+// For weather API
 String cityCode = "Nanjing,CN";
 String APIKEY = "b89072aa8cd18aab5f76df1a0debe2eb";
+// For WiFi manager
+bool isAPMode;
 bool isReconfigWiFi;
 const uint8_t INT_PIN = 0;
 
@@ -38,12 +43,15 @@ void setup() {
 }
 
 void loop() {
-    websocket.loop();
     if (isReconfigWiFi) {
         Serial.println("Reconfig WiFi started!");
         setAP();
-        manageServer();
+        WiFiManageServer();
         isReconfigWiFi = false;
     }
-    getHTTPRequest();
+    if (isAPMode) {
+        websocket.loop();
+    } else {
+        getWeatherData();
+    }
 }
