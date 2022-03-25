@@ -12,6 +12,10 @@
 #include <SSD1306.h>
 #include <TaskScheduler.h>
 
+// Header files for NTP time
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
 // For WiFi configuration
 String ssid;
 String password;
@@ -34,12 +38,20 @@ struct weatherData {
 
 weatherData weather;
 
+// Define object for Server
 AsyncWebServer server(80);
 WebSocketsServer websocket(81);
+// Define object for WiFi atuo reconnect
 WiFiEventHandler WiFiStationDisconnected;
 Scheduler tasks;
+// Define for OLED
 OLED oled(128, 64);
 
+// Define NTP Client to get time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", 28800);
+
+// OELD elements file
 #include "bitmap.h"
 #include "font/Dialog_bold_10.h"
 #include "font/Orbitron_Bold_16.h"
@@ -55,7 +67,7 @@ OLED oled(128, 64);
 Task task1(0, TASK_FOREVER, &task1callback);
 Task task2(30 * TASK_MINUTE, TASK_FOREVER, &task2callback);
 Task task3(0, TASK_FOREVER, &task3callback);
-Task task4(10 * TASK_SECOND, TASK_FOREVER, &task4callback);
+Task task4(TASK_SECOND, TASK_FOREVER, &task4callback);
 
 void setup() {
     pinMode(INT_PIN, INPUT_PULLUP);
@@ -64,6 +76,9 @@ void setup() {
     initSPIFFS();
     initWiFi();
     initWebsocket();
+
+    // Init for ntp client
+    timeClient.begin();
 
     tasks.addTask(task1);
     tasks.addTask(task3);
