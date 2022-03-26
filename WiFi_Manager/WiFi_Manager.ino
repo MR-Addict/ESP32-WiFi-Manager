@@ -70,7 +70,7 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org", 28800);
 #include "tasks.h"
 
 Task task1(0, TASK_FOREVER, &task1callback);
-Task task2(30 * TASK_MINUTE, TASK_FOREVER, &task2callback);
+Task task2(TASK_MINUTE, TASK_FOREVER, &task2callback);
 Task task3(0, TASK_FOREVER, &task3callback);
 Task task4(TASK_SECOND, TASK_FOREVER, &task4callback);
 
