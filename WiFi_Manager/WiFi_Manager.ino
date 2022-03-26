@@ -61,6 +61,8 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org", 28800);
 #include "font/Dialog_bold_10.h"
 #include "font/Orbitron_Bold_16.h"
 
+#include "OLED.h"
+
 #include "SPIFFS_event.h"
 #include "server_event.h"
 

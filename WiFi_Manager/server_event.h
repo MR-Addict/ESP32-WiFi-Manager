@@ -17,11 +17,8 @@ void WiFiManageServer() {
         }
         writeSPIFFS(wmssid, wmpwd, wmhostname, wmcity);
         request->send(200, "text/plain", "Configure Done. ESP restarting...");
-        oled.clear();
-        oled.setFont(&Dialog_bold_10);
-        oled.drawBitmap(44, 0, 40, 40, restart_40x40);
-        oled.print(20, 40, "Restarting...");
-        oled.show();
+        // OLED show restarting
+        show_restart();
         ESP.restart();
     });
 

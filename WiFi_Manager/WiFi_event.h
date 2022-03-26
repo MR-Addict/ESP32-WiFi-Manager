@@ -1,11 +1,6 @@
 void setAP() {
-    // Show AP Mode message
-    oled.clear();
-    oled.setFont(&Dialog_bold_10);
-    oled.drawBitmap(44, 0, 40, 40, AP_40x40);
-    oled.print(0, 38, "SSID:WiFi Manager");
-    oled.print(0, 51, "PWD:123456789");
-    oled.show();
+    // OLE show AP Mode message
+    show_AP_mode();
     Serial.println("Reconfig WiFi started!");
     // Reset server first before set AP mode
     server.reset();
@@ -25,14 +20,8 @@ bool setSTA() {
     if (!updateSPIFFS()) {
         return false;
     }
-    // Show connection message
-    oled.clear();
-    oled.setFont(&Dialog_bold_10);
-    char message[50];
-    sprintf(message, "Tring to connect to %s...", wifi.ssid);
-    oled.drawBitmap(44, 0, 40, 32, WiFi_Lost_40x32);
-    oled.print(0, 35, message);
-    oled.show();
+    // OLED show connection message
+    show_trying_connect();
     // Configure STA
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(wifi.hostname.c_str());
@@ -53,12 +42,8 @@ bool setSTA() {
         else if (millis() - connectTime > 50000) {
             Serial.println();
             Serial.println("Timeout! Connect failed!");
-            // Show connection failed message
-            oled.clear();
-            oled.setFont(&Dialog_bold_10);
-            oled.drawBitmap(44, 0, 40, 32, WiFi_Lost_40x32);
-            oled.print(0, 35, "Timeout. Switch to AP mode");
-            oled.show();
+            // OELD show connection failed message
+            show_connect_failed();
             delay(3000);
             return false;
         }
@@ -66,13 +51,7 @@ bool setSTA() {
     Serial.println();
     Serial.println(WiFi.localIP());
     // Show connection success message
-    oled.clear();
-    oled.setFont(&Dialog_bold_10);
-    oled.drawBitmap(44, 0, 40, 32, WiFi_40x32);
-    oled.print(0, 35, "Connect successful.");
-    sprintf(message, "IP:%s", WiFi.localIP().toString().c_str());
-    oled.print(0, 48, message);
-    oled.show();
+    show_connect_success();
     delay(3000);
     return true;
 }
@@ -99,13 +78,7 @@ void initWiFi() {
             if (isAPMode)
                 return;
             // Show connection message
-            oled.clear();
-            oled.setFont(&Dialog_bold_10);
-            char message[50];
-            sprintf(message, "Tring to connect to %s...", wifi.ssid);
-            oled.drawBitmap(44, 0, 40, 32, WiFi_Lost_40x32);
-            oled.print(0, 35, message);
-            oled.show();
+            show_trying_connect();
             Serial.println("WiFi lost connection. Trying to reconnect...");
             WiFi.begin(wifi.ssid.c_str(), wifi.pwd.c_str());
         });
