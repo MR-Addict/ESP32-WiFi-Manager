@@ -1,7 +1,7 @@
 void WiFiManageServer() {
     server.on("/", HTTP_POST, [](AsyncWebServerRequest* request) {
         // Get POST data
-        String wmssid, wmpwd, wmhostname;
+        String wmssid, wmpwd, wmhostname, wmcity;
         uint8_t params = request->params();
         for (uint8_t i = 0; i < params; i++) {
             AsyncWebParameter* p = request->getParam(i);
@@ -11,16 +11,17 @@ void WiFiManageServer() {
                 wmpwd = p->value().c_str();
             } else if (strcmp(p->name().c_str(), "hostname") == 0) {
                 wmhostname = p->value().c_str();
+            } else if (strcmp(p->name().c_str(), "city") == 0) {
+                wmcity = p->value().c_str();
             }
         }
-        writeSPIFFS(wmssid, wmpwd, wmhostname);
+        writeSPIFFS(wmssid, wmpwd, wmhostname, wmcity);
         request->send(200, "text/plain", "Configure Done. ESP restarting...");
         oled.clear();
         oled.setFont(&Dialog_bold_10);
         oled.drawBitmap(44, 0, 40, 40, restart_40x40);
         oled.print(20, 40, "Restarting...");
         oled.show();
-        delay(3000);
         ESP.restart();
     });
 
@@ -41,8 +42,8 @@ void getWeatherData() {
     WiFiClient client;
     HTTPClient http;
     String server =
-        "http://api.openweathermap.org/data/2.5/weather?q=" + cityCode +
-        "&APPID=" + APIKEY + "&mode=json&units=metric";
+        "http://api.openweathermap.org/data/2.5/weather?q=" + wifi.city +
+        ",CN&APPID=" + APIKEY + "&mode=json&units=metric";
     http.begin(client, server);
     int8_t httpCode = http.GET();
     if (httpCode) {

@@ -28,21 +28,27 @@ bool updateSPIFFS() {
         return false;
     }
     if (doc.containsKey("ssid")) {
-        ssid = doc["ssid"].as<String>();
+        wifi.ssid = doc["ssid"].as<String>();
     }
     if (doc.containsKey("password")) {
-        password = doc["password"].as<String>();
+        wifi.pwd = doc["password"].as<String>();
     }
     if (doc.containsKey("hostname")) {
-        hostname = doc["hostname"].as<String>();
+        wifi.hostname = doc["hostname"].as<String>();
     }
-    if (ssid == "") {
+    if (doc.containsKey("city")) {
+        wifi.city = doc["city"].as<String>();
+    }
+    if (wifi.ssid == "" || wifi.city == "") {
         return false;
     }
     return true;
 }
 
-void writeSPIFFS(String wmssid, String wmpassword, String wmhostname) {
+void writeSPIFFS(String wmssid,
+                 String wmpwd,
+                 String wmhostname,
+                 String wmcity) {
     SPIFFS.remove("/JSON.json");
     File file = SPIFFS.open("/JSON.json", "w");
     if (!file || file.isDirectory()) {
@@ -53,8 +59,9 @@ void writeSPIFFS(String wmssid, String wmpassword, String wmhostname) {
     // Set the values in the document
     StaticJsonDocument<200> doc;
     doc["ssid"] = wmssid;
-    doc["password"] = wmpassword;
+    doc["password"] = wmpwd;
     doc["hostname"] = wmhostname;
+    doc["city"] = wmcity;
 
     // Serialize JSON to file
     if (serializeJson(doc, file) == 0) {

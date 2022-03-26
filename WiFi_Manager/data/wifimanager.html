@@ -13,9 +13,10 @@
     </div>
     <div class="card">
       <form action="/" method="post">
-        <input type="text" name="ssid" id="ssid" /><br />
-        <input type="text" name="password" id="password" /><br />
-        <input type="text" name="hostname" id="hostname" /><br />
+        <input type="text" name="ssid" id="ssid" placeholder="ssid" /><br />
+        <input type="text" name="password" id="password" placeholder="password" /><br />
+        <input type="text" name="hostname" id="hostname" placeholder="hostname" /><br />
+        <input type="text" name="city" id="city" placeholder="cityname" /><br />
         <input type="submit" value="Submit" />
       </form>
     </div>
@@ -27,14 +28,17 @@
     };
     function onMessage(event) {
       var JSONContent = JSON.parse(event.data);
-      if (JSONContent.hasOwnProperty("ssid")) {
+      if (JSONContent.hasOwnProperty("ssid") & (JSONContent.ssid != "")) {
         document.getElementById("ssid").value = JSONContent.ssid;
       }
-      if (JSONContent.hasOwnProperty("password")) {
+      if (JSONContent.hasOwnProperty("password") & (JSONContent.password != "")) {
         document.getElementById("password").value = JSONContent.password;
       }
-      if (JSONContent.hasOwnProperty("hostname")) {
+      if (JSONContent.hasOwnProperty("hostname") & (JSONContent.hostname != "")) {
         document.getElementById("hostname").value = JSONContent.hostname;
+      }
+      if (JSONContent.hasOwnProperty("city") & (JSONContent.city != "")) {
+        document.getElementById("city").value = JSONContent.city;
       }
     }
   </script>

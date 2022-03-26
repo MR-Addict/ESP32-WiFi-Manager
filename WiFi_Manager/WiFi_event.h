@@ -29,16 +29,16 @@ bool setSTA() {
     oled.clear();
     oled.setFont(&Dialog_bold_10);
     char message[50];
-    sprintf(message, "Tring to connect to %s...", ssid);
+    sprintf(message, "Tring to connect to %s...", wifi.ssid);
     oled.drawBitmap(44, 0, 40, 32, WiFi_Lost_40x32);
     oled.print(0, 35, message);
     oled.show();
     // Configure STA
     WiFi.mode(WIFI_STA);
-    WiFi.setHostname(hostname.c_str());
-    WiFi.begin(ssid.c_str(), password.c_str());
+    WiFi.setHostname(wifi.hostname.c_str());
+    WiFi.begin(wifi.ssid.c_str(), wifi.pwd.c_str());
     Serial.print("Connect to ");
-    Serial.print(ssid);
+    Serial.print(wifi.ssid);
 
     // Connect to WIFI
     unsigned long connectTime = millis();
@@ -102,11 +102,11 @@ void initWiFi() {
             oled.clear();
             oled.setFont(&Dialog_bold_10);
             char message[50];
-            sprintf(message, "Tring to connect to %s...", ssid);
+            sprintf(message, "Tring to connect to %s...", wifi.ssid);
             oled.drawBitmap(44, 0, 40, 32, WiFi_Lost_40x32);
             oled.print(0, 35, message);
             oled.show();
             Serial.println("WiFi lost connection. Trying to reconnect...");
-            WiFi.begin(ssid.c_str(), password.c_str());
+            WiFi.begin(wifi.ssid.c_str(), wifi.pwd.c_str());
         });
 }

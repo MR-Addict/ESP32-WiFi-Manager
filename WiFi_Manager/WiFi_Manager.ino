@@ -16,13 +16,9 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 
-// For WiFi configuration
-String ssid;
-String password;
-String hostname;
-// For openweathermap API
-String cityCode = "Nanjing, CN";
+// For weather APIKEY
 #include <arduino_secrets.h>
+
 // For WiFi manager
 bool isAPMode;
 bool isReconfigWiFi;
@@ -36,7 +32,16 @@ struct weatherData {
     String weather;
 };
 
+// WiFi configuration structure
+struct WiFiData {
+    String ssid;
+    String pwd;
+    String hostname;
+    String city;
+};
+
 weatherData weather;
+WiFiData wifi;
 
 // Define object for Server
 AsyncWebServer server(80);
@@ -80,6 +85,7 @@ void setup() {
     // Init for ntp client
     timeClient.begin();
 
+    // Init for tasks
     tasks.addTask(task1);
     tasks.addTask(task3);
     tasks.addTask(task2);

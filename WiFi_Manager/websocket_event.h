@@ -14,9 +14,10 @@ void webSocketEvent(uint8_t num,
             // Set the values in the document
             String message;
             StaticJsonDocument<200> doc;
-            doc["ssid"] = ssid;
-            doc["password"] = password;
-            doc["hostname"] = hostname;
+            doc["ssid"] = wifi.ssid;
+            doc["password"] = wifi.pwd;
+            doc["hostname"] = wifi.hostname;
+            doc["city"] = wifi.city;
 
             // Serialize JSON to file
             serializeJson(doc, message);
